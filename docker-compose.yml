@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  discord-cat:
+    build: .
+    command: ./discord-cat
+    volumes:
+      - ${PWD}/.env:/.env
