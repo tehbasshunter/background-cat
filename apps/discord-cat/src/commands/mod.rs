@@ -130,7 +130,7 @@ async fn info(ctx: &Context, msg: &Message, _: Args) -> CommandResult {
 Developed by {}.
 To start, just upload a log from MultiMC. (Type `-log` for help)
 
-[Source Code available under AGPLv3](https://gitlab.com/Scotsguy/background-cat)
+[Source Code available under AGPLv3](https://github.com/MultiMC/background-cat)
 ", creator_name))
                 });
                 m
