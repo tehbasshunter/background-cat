@@ -10,7 +10,7 @@ use serenity::{
         help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
         StandardFramework,
     },
-    model::{channel::Message, gateway::Ready, id::UserId},
+    model::{channel::Message, gateway::Ready, id::{UserId, ChannelId}},
     prelude::*,
     utils::Colour,
 };
@@ -111,38 +111,34 @@ impl EventHandler for Handler {
             debug!("Content of log: {}", log);
 
             let mistakes = common_mistakes(&log);
-
-            if mistakes.is_empty() {
-                info!("Didn't find any mistakes in log ({})", link.as_str());
+            if ! mistakes.is_empty() {
+                send_reply(msg.channel_id, mistakes, ctx).await;
                 return;
+            } else {
+                info!("Didn't find any mistakes in log ({})", link.as_str());
             }
-            debug!("Mistakes found: {:?}", mistakes);
-
-            if let Err(why) =
-                msg.channel_id
-                    .send_message(&ctx, |m| {
-                        m.embed(|e| {
-                            e.title("Automated Response: (Warning: Experimental)");
-                            e.colour(Colour::DARK_TEAL);
-                            for i in mistakes.iter() {
-                                e.field(i.0, &i.1, true);
-                            }
-                            e.footer(|f| {
-                        f.icon_url("https://cdn.discordapp.com/emojis/280120125284417536.png?v=1");
-                        f.text("This might not solve your problem, but it could be worth a try")
-                    });
-                            debug!("Embed: {:?}", e);
-                            e
-                        });
-                        debug!("Embed: {:?}", m);
-                        m
-                    })
-                    .await
-            {
-                error!("Couldn't send message: {}", why)
-            }
-            return;
         };
+
+        for attachment in msg.attachments {
+            let content = match attachment.download().await {
+                Ok(content) => content,
+                Err(_) => return,
+            };
+            let content_type = attachment.content_type;
+            if content_type.is_some() && content_type.unwrap() == "text/plain; charset=utf-8" {
+                let log = String::from_utf8_lossy(&content).into_owned();
+                let mistakes = common_mistakes(&log);
+    
+                if ! mistakes.is_empty() {
+                    debug!("Mistakes found: {:?}", mistakes);
+                    send_reply(msg.channel_id, mistakes, ctx).await;
+                    return;
+                } else {
+                    info!("Didn't find any mistakes in attachment ({})", attachment.filename);
+                }
+            }
+        }
+        return;
     }
 
     // TODO: delete on reaction
@@ -157,4 +153,30 @@ impl EventHandler for Handler {
         )
         .await;
     }
+}
+
+
+async fn send_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: Context) {
+    if let Err(why) = channel_id
+        .send_message(&ctx, |m| {
+            m.embed(|e| {
+                e.title("Automated Response: (Warning: Experimental)");
+                e.colour(Colour::DARK_TEAL);
+                for i in mistakes.iter() {
+                    e.field(i.0, &i.1, true);
+                }
+                e.footer(|f| {
+                    f.icon_url("https://cdn.discordapp.com/emojis/280120125284417536.png?v=1");
+                    f.text("This might not solve your problem, but it could be worth a try")
+                });
+                debug!("Embed: {:?}", e);
+                e
+            });
+            debug!("Embed: {:?}", m);
+            m
+        })
+        .await {
+            error!("Couldn't send message: {}", why)
+        }
+    return;
 }
