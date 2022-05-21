@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-background_cat = { path = ".."}
+background-cat = { path = "../../libs/background-cat"}
 
 regex = "1.5.5"
 lazy_static = "1.4.0"

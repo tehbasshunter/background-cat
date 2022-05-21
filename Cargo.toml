@@ -1,19 +1,6 @@
-[package]
-name = "background_cat"
-version = "0.1.0"
-authors = ["AppleTheGolden <scotsbox@protonmail.com>"]
-edition = "2021"
-
 [workspace]
-members = ["discord-cat", "cli-cat"]
-
-
-[dependencies]
-regex = "1.5.5"
-lazy_static = "1.4.0"
-log = { version = "0.4.16", features = ["release_max_level_info"] }
-env_logger = "0.9.0"
-indoc = "1.0.6"
-
-[profile.release]
-lto = true
+members = [
+    "apps/cli-cat",
+    "apps/discord-cat",
+    "libs/background-cat",
+]
