@@ -4,3 +4,6 @@ members = [
     "apps/discord-cat",
     "libs/background-cat",
 ]
+
+[profile.release]
+lto = true
