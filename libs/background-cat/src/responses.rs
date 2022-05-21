@@ -46,27 +46,24 @@ lazy_static! {
         (
             "multimc-in-onedrive",
             indoc! {
-                "MultiMC is located in a folder managed by OneDrive. OneDrive messes with Minecraft folders while the game is running, \
-                and this often leads to crashes.
+                "MultiMC is possibly located in a folder managed by OneDrive, if you already have OneDrive disabled \
+                you can ignore this warning.\n\
+                OneDrive can mess with your game files while the game is running, and this often leads to crashes.\n\
                 You should move the MultiMC folder to a different folder."
             }
         ),
         (
             "use-java-8",
             indoc! {
-                "The version of Minecraft you are playing does not support using modern versions of Java. \
-                [Please use Java 8, click here for help.](https://github.com/MultiMC/MultiMC5/wiki/Using-the-right-Java)"
+                "The version of Minecraft you are playing does not support using modern versions of Java.\n\
+                [Please check our wiki for more information.](https://github.com/MultiMC/Launcher/wiki/Using-the-right-Java#minecraft-116-and-older)"
             }
         ),
         (
             "use-java-17",
             indoc! {
-                "You are playing a version of Minecraft that requires Java 17, but are using an older Java version.
-                Please install Java 17 you can find downloads [here](https://www.azul.com/downloads/?version=java-17-lts&architecture=x86-64-bit&package=jre)
-                On Windows: Download the .msi file. After installation you may have to update MultiMC to detect the new Java version, to do so open the settings and \
-                change Update Channel to 'Development', then update MultiMC.
-                Open the MultiMC Java settings and make sure Java 8 is still selected as default for more help with that run `-sjava`.\
-                Then edit your 1.17+ instance settings, open the Java tab, check 'Java Installation', click 'Auto-detect..' and select Java 17."
+                "You are playing a version of Minecraft that requires Java 17 or newer, but are using an older Java version.\n\
+                [Please check our wiki for more information.](https://github.com/MultiMC/Launcher/wiki/Using-the-right-Java#minecraft-117-and-newer)"
             }
         ),
         (
