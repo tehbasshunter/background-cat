@@ -6,12 +6,10 @@ use std::{collections::HashSet, env};
 
 use serenity::{
     async_trait,
-    client::bridge::gateway::GatewayIntents,
     framework::standard::{
         help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
         StandardFramework,
     },
-    http::Http,
     model::{channel::Message, gateway::Ready, id::UserId},
     prelude::*,
     utils::Colour,
@@ -32,17 +30,9 @@ async fn main() {
 
     let token = env::var("DISCORD_TOKEN").expect("expected a token in $DISCORD_TOKEN");
 
-    let http = Http::new_with_token(&token);
-    let bot_id = http
-        .get_current_application_info() // what a mouthful
-        .await
-        .expect("couldn't get info on the bot user")
-        .id;
-
     let framework = StandardFramework::new()
         .configure(|c| {
             c.with_whitespace(true)
-                .on_mention(Some(bot_id))
                 .prefix(&env::var("BACKGROUND_CAT_PREFIX").unwrap_or_else(|_| "-".to_string()))
                 .case_insensitivity(true)
         })
@@ -53,10 +43,13 @@ async fn main() {
         .help(&MY_HELP)
         .after(after_hook);
 
-    let mut client = Client::builder(&token)
+    let intents = GatewayIntents::GUILD_MESSAGES
+        | GatewayIntents::DIRECT_MESSAGES
+        | GatewayIntents::MESSAGE_CONTENT;
+
+    let mut client = Client::builder(&token, intents)
         .event_handler(Handler)
         .framework(framework)
-        .intents(GatewayIntents::GUILD_MESSAGES | GatewayIntents::DIRECT_MESSAGES)
         .await
         .expect("error creating client");
 
