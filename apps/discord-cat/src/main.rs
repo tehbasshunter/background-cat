@@ -10,7 +10,11 @@ use serenity::{
         help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
         StandardFramework,
     },
-    model::{channel::Message, gateway::Ready, id::{UserId, ChannelId}},
+    model::{
+        channel::Message,
+        gateway::Ready,
+        id::{ChannelId, UserId},
+    },
     prelude::*,
     utils::Colour,
 };
@@ -125,16 +129,19 @@ impl EventHandler for Handler {
                 Err(_) => return,
             };
             let content_type = attachment.content_type;
-            if content_type.is_some() && content_type.unwrap() == "text/plain; charset=utf-8" {
+            if content_type.is_some() && str::starts_with(&content_type.unwrap(), "text/plain") {
                 let log = String::from_utf8_lossy(&content).into_owned();
                 let mistakes = common_mistakes(&log);
-    
-                if ! mistakes.is_empty() {
+
+                if !mistakes.is_empty() {
                     debug!("Mistakes found: {:?}", mistakes);
                     send_reply(msg.channel_id, mistakes, ctx).await;
                     return;
                 } else {
-                    info!("Didn't find any mistakes in attachment ({})", attachment.filename);
+                    info!(
+                        "Didn't find any mistakes in attachment ({})",
+                        attachment.filename
+                    );
                 }
             }
         }
