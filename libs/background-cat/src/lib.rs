@@ -226,3 +226,60 @@ fn old_multimc_version(log: &str) -> Option<(&str, String)> {
     }
 }
 */
+
+pub fn common_origins(input: &str) -> Vec<(&str, String)> {
+    ORIGINS.iter().flat_map(|m| m(input)).collect()
+}
+
+pub(crate) const ORIGINS: [Check; 4] = [
+    custom_build,
+    pirated_build,
+    forked_build,
+    m1_wrapper
+];
+
+fn custom_build(log: &str) -> Option<(&str, String)> {
+    const MULTIMC_BUILD: &str = "MultiMC version: 0.";
+    const CUSTOM_BUILD: &str = "-custom\n";
+    
+    if log.contains(MULTIMC_BUILD) {
+        if log.contains(CUSTOM_BUILD) {
+            Some(("‼", RESPONSES.get("custom-build")?.to_string()))
+        } else {
+            None
+        }
+    } else {
+        None
+    }
+}
+
+fn pirated_build(log: &str) -> Option<(&str, String)> {
+    const PIRATED_BUILD: &str = "UltimMC version: ";
+
+    if log.contains(PIRATED_BUILD) {
+        Some(("‼", RESPONSES.get("pirated-build")?.to_string()))
+    } else {
+        None
+    }
+}
+
+fn forked_build(log: &str) -> Option<(&str, String)> {
+    const POLYMC_BUILD: &str = "PolyMC version: ";
+    const MANYMC_BUILD: &str = "ManyMC version: ";
+
+    if log.contains(POLYMC_BUILD) || log.contains(MANYMC_BUILD) {
+        Some(("‼", RESPONSES.get("forked-build")?.to_string()))
+    } else {
+        None
+    }
+}
+
+fn m1_wrapper(log: &str) -> Option<(&str, String)> {
+    const M1_PYTHON_WRAPPER: &str = "/m1-multimc-hack/mcwrap.py";
+
+    if log.contains(M1_PYTHON_WRAPPER) {
+        Some(("‼", RESPONSES.get("m1-python-wrapper")?.to_string()))
+    } else {
+        None
+    }
+}

@@ -84,6 +84,31 @@ lazy_static! {
             indoc! {
                 "You're using 32-bit Java. [See here for help installing the correct version.](https://github.com/MultiMC/MultiMC5/wiki/Using-the-right-Java)"
             }
+        ),
+        (
+            "custom-build",
+            indoc! {
+                "You're using a self build version of MultiMC. We only support builds distributed from our website or packages from our wiki. [See here for official builds.](https://multimc.org)\n\
+                If you are building MultiMC as developer to add features, you might want to request access to #dev-talk to discuss the feature."
+            }
+        ),
+        (
+            "pirated-build",
+            indoc! {
+                "You're using a pirated Launcher. We only support builds distributed from our website or packages from our wiki that only work with a Mojang and Microsoft Account. [See here for official builds.](https://multimc.org)"
+            }
+        ),
+        (
+            "forked-build",
+            indoc! {
+                "You're using a forked build of MultiMC. We only support builds distributed from our website or packages from our wiki. [See here for official builds.](https://multimc.org)"
+            }
+        ),
+        (
+            "m1-python-wrapper",
+            indoc! {
+                "You're using MultiMC with the M1 python wrapper. Please do not use this to make MultiMC work on M1. Instead run MultiMC via the Rosetta 2 compatibility layer and with the usage of a x86_64 Java binary."
+            }
         )
     ]);
 }

@@ -20,6 +20,7 @@ use serenity::{
 };
 
 use background_cat::common_mistakes;
+use background_cat::common_origins;
 
 mod commands;
 use commands::{FUN_GROUP, OTHER_GROUP, STATICIMAGE_GROUP, STATICTEXT_GROUP};
@@ -114,13 +115,22 @@ impl EventHandler for Handler {
             };
             debug!("Content of log: {}", log);
 
-            let mistakes = common_mistakes(&log);
-            if ! mistakes.is_empty() {
-                send_reply(msg.channel_id, mistakes, ctx).await;
-                return;
+            let origins = common_origins(&log);
+
+            if origins.is_empty() {
+                let mistakes = common_mistakes(&log);
+                if ! mistakes.is_empty() {
+                    send_help_reply(msg.channel_id, mistakes, ctx).await;
+                    return;
+                } else {
+                    info!("Didn't find any mistakes in log ({})", link.as_str());
+                }
             } else {
-                info!("Didn't find any mistakes in log ({})", link.as_str());
+                info!("Detected pirated, custom or forked launcher ({})", link.as_str());
+                send_origins_reply(msg.channel_id, origins, ctx).await;
+                return;
             }
+            
         };
 
         for attachment in msg.attachments {
@@ -131,17 +141,29 @@ impl EventHandler for Handler {
             let content_type = attachment.content_type;
             if content_type.is_some() && str::starts_with(&content_type.unwrap(), "text/plain") {
                 let log = String::from_utf8_lossy(&content).into_owned();
-                let mistakes = common_mistakes(&log);
 
-                if !mistakes.is_empty() {
-                    debug!("Mistakes found: {:?}", mistakes);
-                    send_reply(msg.channel_id, mistakes, ctx).await;
-                    return;
+                let origins = common_origins(&log);
+
+                if origins.is_empty() {
+                    let mistakes = common_mistakes(&log);
+
+                    if !mistakes.is_empty() {
+                        debug!("Mistakes found: {:?}", mistakes);
+                        send_help_reply(msg.channel_id, mistakes, ctx).await;
+                        return;
+                    } else {
+                        info!(
+                            "Didn't find any mistakes in attachment ({})",
+                            attachment.filename
+                        );
+                    }
                 } else {
                     info!(
-                        "Didn't find any mistakes in attachment ({})",
+                        "Detected pirated, custom or forked launcher ({})",
                         attachment.filename
                     );
+                    send_origins_reply(msg.channel_id, origins, ctx).await;
+                    return;
                 }
             }
         }
@@ -163,7 +185,7 @@ impl EventHandler for Handler {
 }
 
 
-async fn send_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: Context) {
+async fn send_help_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: Context) {
     if let Err(why) = channel_id
         .send_message(&ctx, |m| {
             m.embed(|e| {
@@ -175,6 +197,31 @@ async fn send_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: C
                 e.footer(|f| {
                     f.icon_url("https://cdn.discordapp.com/emojis/280120125284417536.png?v=1");
                     f.text("This might not solve your problem, but it could be worth a try")
+                });
+                debug!("Embed: {:?}", e);
+                e
+            });
+            debug!("Embed: {:?}", m);
+            m
+        })
+        .await {
+            error!("Couldn't send message: {}", why)
+        }
+    return;
+}
+
+async fn send_origins_reply(channel_id: ChannelId, origins: Vec<(&str, String)>, ctx: Context) {
+    if let Err(why) = channel_id
+        .send_message(&ctx, |m| {
+            m.embed(|e| {
+                e.title("Automated Response: (Warning: Experimental)");
+                e.colour(Colour::DARK_TEAL);
+                for i in origins.iter() {
+                    e.field(i.0, &i.1, true);
+                }
+                e.footer(|f| {
+                    f.icon_url("https://cdn.discordapp.com/emojis/280120125284417536.png?v=1");
+                    f.text("If you like a game, you should support it and buy it!")
                 });
                 debug!("Embed: {:?}", e);
                 e
