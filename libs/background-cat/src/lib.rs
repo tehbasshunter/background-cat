@@ -255,8 +255,9 @@ fn custom_build(log: &str) -> Option<(&str, String)> {
 
 fn pirated_build(log: &str) -> Option<(&str, String)> {
     const PIRATED_BUILD: &str = "UltimMC version: ";
+    const AUTH_INJECTOR: &str = "authlib-injector";
 
-    if log.contains(PIRATED_BUILD) {
+    if log.contains(PIRATED_BUILD) || log.contains(AUTH_INJECTOR) {
         Some(("‼", RESPONSES.get("pirated-build")?.to_string()))
     } else {
         None
