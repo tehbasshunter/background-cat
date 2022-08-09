@@ -12,7 +12,7 @@ pub fn common_mistakes(input: &str) -> Vec<(&str, String)> {
 
 pub(crate) type Check = fn(&str) -> Option<(&str, String)>;
 
-pub(crate) const PARSERS: [Check; 13] = [
+pub(crate) const PARSERS: [Check; 15] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
@@ -27,6 +27,8 @@ pub(crate) const PARSERS: [Check; 13] = [
     shadermod_optifine_conflict,
     fabric_api_missing,
     java_architecture,
+    using_system_glfw,
+    using_system_openal,
     //old_multimc_version,
 ];
 
@@ -185,6 +187,24 @@ fn java_architecture(log: &str) -> Option<(&str, String)> {
     const TRIGGER: &str = "Your Java architecture is not matching your system architecture.";
     if log.contains(TRIGGER) {
         Some(("❗", RESPONSES.get("32-bit-java")?.to_string()))
+    } else {
+        None
+    }
+}
+
+fn using_system_openal(log: &str) -> Option<(&str, String)> {
+    const TRIGGER: &str = "Using system OpenAL.";
+    if log.contains(TRIGGER) {
+        Some(("❗", RESPONSES.get("using-system-openal")?.to_string()))
+    } else {
+        None
+    }
+}
+
+fn using_system_glfw(log: &str) -> Option<(&str, String)> {
+    const TRIGGER: &str = "Using system GLFW.";
+    if log.contains(TRIGGER) {
+        Some(("❗", RESPONSES.get("using-system-glfw")?.to_string()))
     } else {
         None
     }
