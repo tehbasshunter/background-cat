@@ -80,7 +80,7 @@ lazy_static! {
             }
         ),
         (
-            "32-it-java",
+            "32-bit-java",
             indoc! {
                 "You're using 32-bit Java. [See here for help installing the correct version.](https://github.com/MultiMC/MultiMC5/wiki/Using-the-right-Java)"
             }
