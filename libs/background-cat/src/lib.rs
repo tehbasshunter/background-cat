@@ -197,7 +197,7 @@ fn multimc_in_temp_folder(log: &str) -> Option<(&str, String)> {
             Regex::new(r"AppData/Local/Temp/Rar\$[A-Za-z0-9]+\.[0-9]+/MultiMC").unwrap();
     }
     if RE.is_match(log) {
-        Some(("❗", RESPONSES.get("temp-folder")?.to_string()))
+        Some(("‼", RESPONSES.get("temp-folder")?.to_string()))
     } else {
         None
     }
