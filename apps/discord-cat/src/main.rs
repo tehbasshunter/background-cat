@@ -125,14 +125,14 @@ impl EventHandler for Handler {
             if origins.is_empty() {
                 let mistakes = common_mistakes(&log);
                 if ! mistakes.is_empty() {
-                    send_help_reply(msg.channel_id, mistakes, ctx).await;
+                    send_help_reply(msg.channel_id, mistakes, &ctx).await;
                     return;
                 } else {
                     info!("Didn't find any mistakes in log ({})", link.as_str());
                 }
             } else {
                 info!("Detected pirated, custom or forked launcher ({})", link.as_str());
-                send_origins_reply(msg.channel_id, origins, ctx).await;
+                send_origins_reply(msg.channel_id, origins, &ctx).await;
                 return;
             }
             
@@ -147,31 +147,35 @@ impl EventHandler for Handler {
             if content_type.is_some() && str::starts_with(&content_type.unwrap(), "text/plain") {
                 let log = String::from_utf8_lossy(&content).into_owned();
 
-                upload_paste_ee(msg.channel_id, &log, &ctx, &msg.author).await;
+                let paste_ee_future = upload_paste_ee(msg.channel_id, &log, &ctx, &msg.author);
 
-                let origins = common_origins(&log);
+                let log_parse_future = async {
+                    let origins = common_origins(&log);
 
-                if origins.is_empty() {
-                    let mistakes = common_mistakes(&log);
+                    if origins.is_empty() {
+                        let mistakes = common_mistakes(&log);
 
-                    if !mistakes.is_empty() {
-                        debug!("Mistakes found: {:?}", mistakes);
-                        send_help_reply(msg.channel_id, mistakes, ctx).await;
-                        return;
+                        if !mistakes.is_empty() {
+                            debug!("Mistakes found: {:?}", mistakes);
+                            send_help_reply(msg.channel_id, mistakes, &ctx).await;
+                            return;
+                        } else {
+                            info!(
+                                "Didn't find any mistakes in attachment ({})",
+                                attachment.filename
+                            );
+                        }
                     } else {
                         info!(
-                            "Didn't find any mistakes in attachment ({})",
+                            "Detected pirated, custom or forked launcher ({})",
                             attachment.filename
                         );
+                        send_origins_reply(msg.channel_id, origins, &ctx).await;
+                        return;
                     }
-                } else {
-                    info!(
-                        "Detected pirated, custom or forked launcher ({})",
-                        attachment.filename
-                    );
-                    send_origins_reply(msg.channel_id, origins, ctx).await;
-                    return;
-                }
+                };
+
+                futures::join!(paste_ee_future, log_parse_future);
             }
         }
         return;
@@ -305,7 +309,7 @@ async fn upload_paste_ee(channel_id: ChannelId, log: &String, ctx: &Context, use
     }
 }
 
-async fn send_help_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: Context) {
+async fn send_help_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: &Context) {
     if let Err(why) = channel_id
         .send_message(&ctx, |m| {
             m.embed(|e| {
@@ -330,7 +334,7 @@ async fn send_help_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, c
     return;
 }
 
-async fn send_origins_reply(channel_id: ChannelId, origins: Vec<(&str, String)>, ctx: Context) {
+async fn send_origins_reply(channel_id: ChannelId, origins: Vec<(&str, String)>, ctx: &Context) {
     if let Err(why) = channel_id
         .send_message(&ctx, |m| {
             m.embed(|e| {
