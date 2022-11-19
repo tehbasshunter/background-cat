@@ -230,9 +230,9 @@ async fn upload_paste_ee(channel_id: ChannelId, log: &String, ctx: &Context, use
                     let client = reqwest::Client::new();
 
                     let request_body = json::object! {
-                    description: "MultiMC Background Cat Log Upload",
-                    sections: [{ contents: log.as_str() }]
-                }.dump();
+                        description: "MultiMC Background Cat Log Upload",
+                        sections: [{ contents: log.as_str() }]
+                    }.dump();
 
                     let response = json::parse(
                         client.post("https://api.paste.ee/v1/pastes")
