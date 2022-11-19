@@ -20,4 +20,4 @@ json = "0.12.4"
 [dependencies.serenity]
 version = "0.11.2"
 default-features = false
-features = ["client", "model", "gateway", "native_tls_backend", "cache", "utils", "framework", "standard_framework"]
+features = ["client", "model", "collector", "gateway", "native_tls_backend", "cache", "utils", "framework", "standard_framework"]
