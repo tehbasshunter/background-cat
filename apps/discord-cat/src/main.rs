@@ -2,8 +2,7 @@ use lazy_static::lazy_static;
 use log::{debug, error, info};
 use regex::Regex;
 use reqwest::get;
-use std::{collections::HashSet, env};
-use std::time::Duration;
+use std::{collections::HashSet, env, time::Duration};
 use futures::StreamExt;
 
 use serenity::{
