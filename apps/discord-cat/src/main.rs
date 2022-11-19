@@ -142,6 +142,8 @@ impl EventHandler for Handler {
             if content_type.is_some() && str::starts_with(&content_type.unwrap(), "text/plain") {
                 let log = String::from_utf8_lossy(&content).into_owned();
 
+                upload_paste_ee(msg.channel_id, &log, &ctx).await;
+
                 let origins = common_origins(&log);
 
                 if origins.is_empty() {
@@ -184,6 +186,48 @@ impl EventHandler for Handler {
     }
 }
 
+async fn upload_paste_ee(channel_id: ChannelId, log: &String, ctx: &Context) {
+    let paste_ee_token = env::var("PASTE_EE_TOKEN").expect("Expected paste.ee API token in $PASTE_EE_TOKEN");
+    let client = reqwest::Client::new();
+
+    let request_body = json::object! {
+                    description: "MultiMC Background Cat Log Upload",
+                    sections: [{ contents: log.as_str() }]
+                }.dump();
+
+    let response = json::parse(
+        client.post("https://api.paste.ee/v1/pastes")
+            .header("Content-Type", "application/json")
+            .header("X-Auth-Token", paste_ee_token)
+            .body(request_body)
+            .send()
+            .await.unwrap()
+            .text()
+            .await.unwrap()
+            .as_str()
+    ).unwrap();
+
+    if !&response["success"].as_bool().unwrap_or_default() {
+        error!("paste.ee upload failed");
+    } else {
+        let link = &response["link"];
+
+        if let Err(why) = channel_id.send_message(&ctx, |m| {
+            m.embed(|e| {
+                e.title("Uploaded Log");
+                e.colour(Colour::DARK_TEAL);
+                e.field("Log uploaded to paste.ee:", link, true);
+                debug!("Embed: {:?}", e);
+                e
+            });
+            debug!("Embed: {:?}", m);
+            m
+        }).await {
+            error!("Couldn't send message: {}", why);
+        }
+        info!("Uploaded attachment log to paste.ee: {}", link);
+    }
+}
 
 async fn send_help_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: Context) {
     if let Err(why) = channel_id
