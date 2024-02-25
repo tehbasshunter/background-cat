@@ -81,7 +81,7 @@ static_text_command! {
         "https://github.com/MultiMC/MultiMC5/wiki/Using-the-right-Java";
     too_much_ram "tmram" "vazkiiram",
         "Allocating too much RAM to Minecraft is bad for performance:",
-        "https://vazkii.net/blog_archive/#blog/ram-explanation";
+        "https://vazkii.notion.site/A-semi-technical-explanation-of-why-you-shouldn-t-allocate-too-much-RAM-to-Minecraft-78e7bd41ba6646de8d1c55c033674bce";
     mod_repost "repost" "vazkiirepost" "9mc" "9minecraft",
         "Please make sure you only download mods from reputable sources.",
         "For more info, please read https://vazkii.net/repost/";
@@ -124,8 +124,6 @@ static_image_command! {
         "How to install Forge:";
     javaarg "javaargs" "jarg" "jargs",
         "https://cdn.discordapp.com/attachments/362205883218001920/711410345301770300/MultiMC_JVM_Args.png";
-    multimc_dev "dev", "https://cdn.discordapp.com/attachments/134843027553255425/855880510031003728/unknown.png",
-        "How to switch to the MultiMC development version:";
 }
 
 #[group]
