@@ -80,7 +80,7 @@ lazy_static! {
             }
         ),
         (
-            "32-it-java",
+            "32-bit-java",
             indoc! {
                 "You're using 32-bit Java. [See here for help installing the correct version.](https://github.com/MultiMC/MultiMC5/wiki/Using-the-right-Java)"
             }
@@ -115,6 +115,18 @@ lazy_static! {
             "m1-python-wrapper",
             indoc! {
                 "You're using MultiMC with the M1 python wrapper. Please do not use this to make MultiMC work on M1. Instead run MultiMC via the Rosetta 2 compatibility layer and with the usage of a x86_64 Java binary."
+            }
+        ),
+        (
+            "using-system-openal",
+            indoc! {
+                "You seem to be using your systems OpenAL installation. This can cause the instance to crash if not properly setup. In case of a crash, make sure this isn't the cause of it."
+            }
+        ),
+        (
+            "using-system-glfw",
+            indoc! {
+                "You seem to be using your systems GLFW installation. This can cause the instance to crash if not properly setup. In case of a crash, make sure this isn't the cause of it."
             }
         )
     ]);

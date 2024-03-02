@@ -91,6 +91,25 @@ static_text_command! {
     optifine,
         "To use OptiFine with MultiMC, please read this page:",
         "https://github.com/MultiMC/MultiMC5/wiki/MultiMC-and-OptiFine";
+    modpack_editing_checklist "modpack_checklist" "pack_checklist" "pack_edit",
+        "Modpack editing checklist:",
+        "1. Make sure you have all the dependencies of mods\n\
+        2. Make sure the mods are for the correct version and loader\n\
+        3. Make sure you don't have duplicate mods\n\
+        4. Download mods only from reputable sources, like Curseforge, \
+        Modrinth or the mod's own website\n\
+        5. Add mods one by one, so you know which mod is causing an issue, \
+        prevents you from reading many logs\n\
+        6. Smaller is better. Kitchensink modpacks not only are underperformant, \
+        but mostly they are so big, that you will never use every mod in it. \
+        Especially since many mods do similar things.\n\
+        7. Optifine is almost always a bad idea in large modpacks, and always with Fabric\n\
+        8. You don't need to always be up to date, as long as it works. Updating can even cause \
+        your worlds to become unplayable because they are corrupted, or because blocks get changed \
+        due to mods changing behavior.\n\
+        \n\
+        Even if your pack fulfills those, it's good to have somewhat of an idea on how to approach \
+        modpack creating. This also goes for modifying existing packs.";
 }
 
 // Format: Name (Optional Alias1 Alias2...) , Image Link (, Optional Message) ;

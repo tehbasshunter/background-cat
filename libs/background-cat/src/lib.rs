@@ -12,7 +12,7 @@ pub fn common_mistakes(input: &str) -> Vec<(&str, String)> {
 
 pub(crate) type Check = fn(&str) -> Option<(&str, String)>;
 
-pub(crate) const PARSERS: [Check; 14] = [
+pub(crate) const PARSERS: [Check; 16] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
@@ -28,6 +28,8 @@ pub(crate) const PARSERS: [Check; 14] = [
     fabric_api_missing,
     java_architecture,
     multimc_in_temp_folder
+    using_system_glfw,
+    using_system_openal,
     //old_multimc_version,
 ];
 
@@ -199,10 +201,27 @@ fn multimc_in_temp_folder(log: &str) -> Option<(&str, String)> {
     if RE.is_match(log) {
         Some(("‼", RESPONSES.get("temp-folder")?.to_string()))
     } else {
+      None
+    }
+}
+
+fn using_system_openal(log: &str) -> Option<(&str, String)> {
+    const TRIGGER: &str = "Using system OpenAL.";
+    if log.contains(TRIGGER) {
+        Some(("❗", RESPONSES.get("using-system-openal")?.to_string()))
+    } else {
         None
     }
 }
 
+fn using_system_glfw(log: &str) -> Option<(&str, String)> {
+    const TRIGGER: &str = "Using system GLFW.";
+    if log.contains(TRIGGER) {
+        Some(("❗", RESPONSES.get("using-system-glfw")?.to_string()))
+    } else {
+        None
+    }
+}
 /* Regex is incorrect/
 fn old_multimc_version(log: &str) -> Option<(&str, String)> {
     lazy_static! {
@@ -253,17 +272,18 @@ pub(crate) const ORIGINS: [Check; 4] = [
 ];
 
 fn custom_build(log: &str) -> Option<(&str, String)> {
-    const MULTIMC_BUILD: &str = "MultiMC version: 0.";
-    const CUSTOM_BUILD: &str = "-custom\n";
-    
-    if log.contains(MULTIMC_BUILD) {
-        if log.contains(CUSTOM_BUILD) {
+    lazy_static! {
+        static ref RE_OFFICIAL: Regex = Regex::new(r"MultiMC version: 0\.[0-7]\.[0-9]+-[0-9]+").unwrap();
+        static ref RE_CUSTOM: Regex = Regex::new(r"MultiMC version: [a-z0-9\.]+-custom").unwrap();
+    }
+    if RE_OFFICIAL.is_match(log) {
+        None
+    } else {
+        if RE_CUSTOM.is_match(log) {
             Some(("‼", RESPONSES.get("custom-build")?.to_string()))
         } else {
             None
         }
-    } else {
-        None
     }
 }
 

@@ -219,10 +219,6 @@ async fn send_origins_reply(channel_id: ChannelId, origins: Vec<(&str, String)>,
                 for i in origins.iter() {
                     e.field(i.0, &i.1, true);
                 }
-                e.footer(|f| {
-                    f.icon_url("https://cdn.discordapp.com/emojis/280120125284417536.png?v=1");
-                    f.text("If you like a game, you should support it and buy it!")
-                });
                 debug!("Embed: {:?}", e);
                 e
             });
