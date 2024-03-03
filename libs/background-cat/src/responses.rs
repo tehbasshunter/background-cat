@@ -88,8 +88,15 @@ lazy_static! {
         (
             "temp-folder",
             indoc! {"
-                Your MultiMC installation is in a temporary folder. Windows will remove it.\n\
+                Your MultiMC installation is in a temporary folder. Your operating system will remove it.\n\
                 To prevent data loss, you should move it or extract it somewhere else, like the C: top directory."
+            }
+        ),
+        (
+            "winrar-temp",
+            indoc! {"
+                Tou did not extract MultiMC to a real folder and are running it from WinRar. Windows will remove it.\n\
+                To prevent data loss, you should extract it somewhere, like the C: top directory."
             }
         ),
         (

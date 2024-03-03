@@ -12,7 +12,7 @@ pub fn common_mistakes(input: &str) -> Vec<(&str, String)> {
 
 pub(crate) type Check = fn(&str) -> Option<(&str, String)>;
 
-pub(crate) const PARSERS: [Check; 16] = [
+pub(crate) const PARSERS: [Check; 17] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
@@ -27,7 +27,8 @@ pub(crate) const PARSERS: [Check; 16] = [
     shadermod_optifine_conflict,
     fabric_api_missing,
     java_architecture,
-    multimc_in_temp_folder
+    winrar_temp,
+    detect_temp_directories,
     using_system_glfw,
     using_system_openal,
     //old_multimc_version,
@@ -193,15 +194,23 @@ fn java_architecture(log: &str) -> Option<(&str, String)> {
     }
 }
 
-fn multimc_in_temp_folder(log: &str) -> Option<(&str, String)> {
+fn winrar_temp(log: &str) -> Option<(&str, String)> {
+    if log.contains("Rar$") {
+        Some(("‼", RESPONSES.get("winrar-temp")?.to_string()))
+    } else {
+      None
+    }
+}
+
+fn detect_temp_directories(log: &str) -> Option<(&str, String)> {
     lazy_static! {
-        static ref RE: Regex =
-            Regex::new(r"AppData/Local/Temp/Rar\$[A-Za-z0-9]+\.[0-9]+/MultiMC").unwrap();
+        static ref RE: Regex = Regex::new(r"Minecraft folder is:\n[A-Z]:/([^/]+/)*Temp").unwrap();
     }
     if RE.is_match(log) {
         Some(("‼", RESPONSES.get("temp-folder")?.to_string()))
-    } else {
-      None
+    }
+    else {
+        None
     }
 }
 
