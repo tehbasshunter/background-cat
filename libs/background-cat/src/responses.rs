@@ -86,6 +86,13 @@ lazy_static! {
             }
         ),
         (
+            "temp-folder",
+            indoc! {"
+                Your MultiMC installation is in a temporary folder. Windows will remove it.\n\
+                To prevent data loss, you should move it or extract it somewhere else, like the C: top directory."
+            }
+        ),
+        (
             "custom-build",
             indoc! {
                 "You're using a self build version of MultiMC. We only support builds distributed from our website or packages from our wiki. [See here for official builds.](https://multimc.org)\n\

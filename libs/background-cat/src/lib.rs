@@ -12,7 +12,7 @@ pub fn common_mistakes(input: &str) -> Vec<(&str, String)> {
 
 pub(crate) type Check = fn(&str) -> Option<(&str, String)>;
 
-pub(crate) const PARSERS: [Check; 15] = [
+pub(crate) const PARSERS: [Check; 16] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
@@ -27,6 +27,7 @@ pub(crate) const PARSERS: [Check; 15] = [
     shadermod_optifine_conflict,
     fabric_api_missing,
     java_architecture,
+    multimc_in_temp_folder
     using_system_glfw,
     using_system_openal,
     //old_multimc_version,
@@ -189,6 +190,18 @@ fn java_architecture(log: &str) -> Option<(&str, String)> {
         Some(("❗", RESPONSES.get("32-bit-java")?.to_string()))
     } else {
         None
+    }
+}
+
+fn multimc_in_temp_folder(log: &str) -> Option<(&str, String)> {
+    lazy_static! {
+        static ref RE: Regex =
+            Regex::new(r"AppData/Local/Temp/Rar\$[A-Za-z0-9]+\.[0-9]+/MultiMC").unwrap();
+    }
+    if RE.is_match(log) {
+        Some(("‼", RESPONSES.get("temp-folder")?.to_string()))
+    } else {
+      None
     }
 }
 
