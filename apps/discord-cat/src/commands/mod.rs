@@ -81,7 +81,7 @@ static_text_command! {
         "https://github.com/MultiMC/MultiMC5/wiki/Using-the-right-Java";
     too_much_ram "tmram" "vazkiiram",
         "Allocating too much RAM to Minecraft is bad for performance:",
-        "https://vazkii.net/blog_archive/#blog/ram-explanation";
+        "https://vazkii.notion.site/A-semi-technical-explanation-of-why-you-shouldn-t-allocate-too-much-RAM-to-Minecraft-78e7bd41ba6646de8d1c55c033674bce";
     mod_repost "repost" "vazkiirepost" "9mc" "9minecraft",
         "Please make sure you only download mods from reputable sources.",
         "For more info, please read https://vazkii.net/repost/";
@@ -114,18 +114,16 @@ static_text_command! {
 
 // Format: Name (Optional Alias1 Alias2...) , Image Link (, Optional Message) ;
 static_image_command! {
-    upload_log "log", "https://cdn.discordapp.com/attachments/531598137790562305/575381000398569493/unknown.png",
+    upload_log "log", "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/upload_log.png",
         "Please upload your log:";
-    select_java "sjava", "https://cdn.discordapp.com/attachments/531598137790562305/575378380573114378/unknown.png",
+    select_java "sjava", "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/set_java.png",
         "Please select your Java version in the MultiMC settings:";
-    select_memory "smemory" "sram", "https://cdn.discordapp.com/attachments/531598137790562305/575376840173027330/unknown.png",
+    select_memory "smemory" "sram", "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/set_ram.png",
         "Please set your instance memory allocation:";
-    install_forge "iforge", "https://cdn.discordapp.com/attachments/531598137790562305/575385471207866388/Install_Forge_in_MultiMC.gif",
+    install_forge "iforge", "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/install_forge.gif",
         "How to install Forge:";
     javaarg "javaargs" "jarg" "jargs",
-        "https://cdn.discordapp.com/attachments/362205883218001920/711410345301770300/MultiMC_JVM_Args.png";
-    multimc_dev "dev", "https://cdn.discordapp.com/attachments/134843027553255425/855880510031003728/unknown.png",
-        "How to switch to the MultiMC development version:";
+        "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/jvm_args.png";
 }
 
 #[group]
