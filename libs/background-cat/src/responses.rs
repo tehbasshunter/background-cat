@@ -102,7 +102,7 @@ lazy_static! {
         (
             "winrar-temp",
             indoc! {"
-                Tou did not extract MultiMC to a real folder and are running it from WinRar. Windows will remove it.\n\
+                You did not extract MultiMC to a real folder and are running it from WinRar. Windows will remove it.\n\
                 To prevent data loss, you should extract it somewhere, like the C: top directory."
             }
         ),
