@@ -12,13 +12,14 @@ pub fn common_mistakes(input: &str) -> Vec<(&str, String)> {
 
 pub(crate) type Check = fn(&str) -> Option<(&str, String)>;
 
-pub(crate) const PARSERS: [Check; 17] = [
+pub(crate) const PARSERS: [Check; 18] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
     //major_java_version,
     forge_too_new_java,
     one_seventeen_plus_java_too_old,
+    two_one_plus_java_too_old,
     m1_failed_to_find_service_port,
     pixel_format_not_accelerated_win10,
     intel_graphics_icd_dll,
@@ -133,17 +134,26 @@ fn forge_too_new_java(log: &str) -> Option<(&str, String)> {
 }
 
 fn one_seventeen_plus_java_too_old(log: &str) -> Option<(&str, String)> {
-    const UNSUPPORTED_CLASS_VERSION_ERROR: &str = "java.lang.UnsupportedClassVersionError: net/minecraft/client/main/Main";
+    //const UNSUPPORTED_CLASS_VERSION_ERROR: &str = "java.lang.UnsupportedClassVersionError: net/minecraft/client/main/Main";   <--- Collides with 21 check.
     const FABRIC_JAVA_VERSION_ERROR: &str = "fabric requires {java @ [>=16]}";
     const FABRIC_JAVA_VERSION_ERROR_SEVENTEEN: &str = "fabric requires {java @ [>=17]}";
     const JAVA_17_WARNING: &str = "Minecraft 1.18 Pre Release 2 and above require the use of Java 17";
 
-    if log.contains(UNSUPPORTED_CLASS_VERSION_ERROR)
-        || log.contains(FABRIC_JAVA_VERSION_ERROR)
+    //if log.contains(UNSUPPORTED_CLASS_VERSION_ERROR)
+    if log.contains(FABRIC_JAVA_VERSION_ERROR)
         || log.contains(FABRIC_JAVA_VERSION_ERROR_SEVENTEEN)
         || log.contains(JAVA_17_WARNING)
     {
         Some(("‼", RESPONSES.get("use-java-17")?.to_string()))
+    } else {
+        None
+    }
+}
+
+fn two_one_plus_java_too_old(log: &str) -> Option<(&str, String)> {
+    const JAVA_CHECK_CLASS_FILE_VERSION: &str = "(class file version 65.0)";
+    if log.contains(JAVA_CHECK_CLASS_FILE_VERSION) {
+        Some(("‼", RESPONSES.get("use-java-21")?.to_string()))
     } else {
         None
     }
