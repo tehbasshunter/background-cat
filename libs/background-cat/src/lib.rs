@@ -12,7 +12,7 @@ pub fn common_mistakes(input: &str) -> Vec<(&str, String)> {
 
 pub(crate) type Check = fn(&str) -> Option<(&str, String)>;
 
-pub(crate) const PARSERS: [Check; 18] = [
+pub(crate) const PARSERS: [Check; 17] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
@@ -28,7 +28,7 @@ pub(crate) const PARSERS: [Check; 18] = [
     shadermod_optifine_conflict,
     fabric_api_missing,
     java_architecture,
-    winrar_temp,
+    //winrar_temp,
     detect_temp_directories,
     using_system_glfw,
     using_system_openal,
@@ -204,19 +204,23 @@ fn java_architecture(log: &str) -> Option<(&str, String)> {
     }
 }
 
-fn winrar_temp(log: &str) -> Option<(&str, String)> {
+/* fn winrar_temp(log: &str) -> Option<(&str, String)> {
     if log.contains("Rar$") {
         Some(("‼", RESPONSES.get("winrar-temp")?.to_string()))
     } else {
       None
     }
 }
+*/
 
 fn detect_temp_directories(log: &str) -> Option<(&str, String)> {
     lazy_static! {
         static ref RE: Regex = Regex::new(r"Minecraft folder is:\n[A-Z]:/([^/]+/)*Temp").unwrap();
     }
-    if RE.is_match(log) {
+    if log.contains("Rar$") {
+        Some(("‼", RESPONSES.get("winrar-temp")?.to_string()))
+    }
+    else if RE.is_match(log) && !log.contains("forge_installer") {
         Some(("‼", RESPONSES.get("temp-folder")?.to_string()))
     }
     else {
