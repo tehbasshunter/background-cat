@@ -134,12 +134,10 @@ fn forge_too_new_java(log: &str) -> Option<(&str, String)> {
 }
 
 fn one_seventeen_plus_java_too_old(log: &str) -> Option<(&str, String)> {
-    //const UNSUPPORTED_CLASS_VERSION_ERROR: &str = "java.lang.UnsupportedClassVersionError: net/minecraft/client/main/Main";   <--- Collides with 21 check.
     const FABRIC_JAVA_VERSION_ERROR: &str = "fabric requires {java @ [>=16]}";
     const FABRIC_JAVA_VERSION_ERROR_SEVENTEEN: &str = "fabric requires {java @ [>=17]}";
     const JAVA_17_WARNING: &str = "Minecraft 1.18 Pre Release 2 and above require the use of Java 17";
 
-    //if log.contains(UNSUPPORTED_CLASS_VERSION_ERROR)
     if log.contains(FABRIC_JAVA_VERSION_ERROR)
         || log.contains(FABRIC_JAVA_VERSION_ERROR_SEVENTEEN)
         || log.contains(JAVA_17_WARNING)
@@ -203,15 +201,6 @@ fn java_architecture(log: &str) -> Option<(&str, String)> {
         None
     }
 }
-
-/* fn winrar_temp(log: &str) -> Option<(&str, String)> {
-    if log.contains("Rar$") {
-        Some(("‼", RESPONSES.get("winrar-temp")?.to_string()))
-    } else {
-      None
-    }
-}
-*/
 
 fn detect_temp_directories(log: &str) -> Option<(&str, String)> {
     lazy_static! {
