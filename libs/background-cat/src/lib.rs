@@ -16,7 +16,6 @@ pub(crate) const PARSERS: [Check; 17] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
-    //major_java_version,
     forge_too_new_java,
     one_seventeen_plus_java_too_old,
     two_one_plus_java_too_old,
@@ -31,7 +30,6 @@ pub(crate) const PARSERS: [Check; 17] = [
     detect_temp_directories,
     using_system_glfw,
     using_system_openal,
-    //old_multimc_version,
 ];
 
 fn multimc_in_program_files(log: &str) -> Option<(&str, String)> {
@@ -102,26 +100,6 @@ fn multimc_in_onedrive_managed_folder(log: &str) -> Option<(&str, String)> {
         None
     }
 }
-/*
-fn major_java_version(log: &str) -> Option<(&str, String)> {
-    lazy_static! {
-        static ref RE: Regex =
-            Regex::new(r"Java is version (1.)??(?P<ver>[6-9]|[1-9][0-9])+(\..+)??,").unwrap();
-    }
-    match RE.captures(log) {
-        Some(capture) if capture.name("ver")?.as_str() == "8" => None,
-        Some(capture) => Some((
-            "❗",
-            format!(
-                "You're using Java {}. Versions other than Java 8 are not designed to be used with Minecraft and may cause issues. \
-                [See here for help installing the correct version.](https://github.com/MultiMC/MultiMC5/wiki/Using-the-right-Java)",
-                capture.name("ver")?.as_str()
-            ),
-        )),
-        _ => None,
-    }
-}
-*/
 
 fn forge_too_new_java(log: &str) -> Option<(&str, String)> {
     const URLCLASSLOADER_CAST: &str = "java.lang.ClassCastException: class jdk.internal.loader.ClassLoaders$AppClassLoader cannot be cast to class java.net.URLClassLoader";
@@ -233,43 +211,6 @@ fn using_system_glfw(log: &str) -> Option<(&str, String)> {
         None
     }
 }
-/* Regex is incorrect/
-fn old_multimc_version(log: &str) -> Option<(&str, String)> {
-    lazy_static! {
-        static ref RE: Regex =
-            Regex::new(r"MultiMC version: (?P<major_ver>0\.[0-9]+\.[0-9]+-(?P<build>[0-9]+))\n")
-                .unwrap();
-    }
-    if let Some(capture) = RE.captures(log) {
-        match capture.name("build")?.as_str().parse::<u32>() {
-            Ok(o) => {
-                if o < 900 {
-                    Some((
-                        "❗",
-                        format!(
-                            "You seem to be using an old build of MultiMC ({}). \
-                            Please update to a more recent version.",
-                            capture.name("major_ver")?.as_str()
-                        ),
-                    ))
-                } else {
-                    None
-                }
-            }
-            Err(_) => Some((
-                "❗",
-                format!(
-                    "You seem to be using an unofficial version of MultiMC ({}). \
-                    Please only use MultiMC downloaded from [multimc.org](https://multimc.org/#Download).",
-                    capture.name("major_ver")?.as_str()
-                ),
-            )),
-        }
-    } else {
-        None
-    }
-}
-*/
 
 pub fn common_origins(input: &str) -> Vec<(&str, String)> {
     ORIGINS.iter().flat_map(|m| m(input)).collect()
