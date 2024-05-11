@@ -67,6 +67,13 @@ lazy_static! {
             }
         ),
         (
+            "use-java-21",
+            indoc! {
+                "You are playing a version of Minecraft that requires Java 21 or newer, but are using an older Java version.\n\
+                [Please check our wiki for more information.](https://github.com/MultiMC/Launcher/wiki/Using-the-right-Java#minecraft-210-and-newer)"
+            }
+        ),
+        (
             "apple-silicon-incompatible-forge",
             indoc! {
                 "You seem to be using an Apple M1 Mac with an incompatible version of Forge. Add the following to your launch arguments as a workaround: `-Dfml.earlyprogresswindow=false`"
@@ -95,7 +102,7 @@ lazy_static! {
         (
             "winrar-temp",
             indoc! {"
-                Tou did not extract MultiMC to a real folder and are running it from WinRar. Windows will remove it.\n\
+                You did not extract MultiMC to a real folder and are running it from WinRar. Windows will remove it.\n\
                 To prevent data loss, you should extract it somewhere, like the C: top directory."
             }
         ),
