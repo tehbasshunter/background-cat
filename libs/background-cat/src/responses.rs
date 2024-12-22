@@ -27,7 +27,7 @@ lazy_static! {
             "out-of-memory",
             indoc! {
                 "You've run out of memory. You should allocate more, although the exact value depends on how many mods you have installed. \
-                [Click this link for a guide.](https://cdn.discordapp.com/attachments/531598137790562305/575376840173027330/unknown.png)"
+                [Click this link for a guide.](https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/set_ram.png)"
             }
         ),
         (
@@ -67,6 +67,13 @@ lazy_static! {
             }
         ),
         (
+            "use-java-21",
+            indoc! {
+                "You are playing a version of Minecraft that requires Java 21 or newer, but are using an older Java version.\n\
+                [Please check our wiki for more information.](https://github.com/MultiMC/Launcher/wiki/Using-the-right-Java#minecraft-210-and-newer)"
+            }
+        ),
+        (
             "apple-silicon-incompatible-forge",
             indoc! {
                 "You seem to be using an Apple M1 Mac with an incompatible version of Forge. Add the following to your launch arguments as a workaround: `-Dfml.earlyprogresswindow=false`"
@@ -83,6 +90,20 @@ lazy_static! {
             "32-bit-java",
             indoc! {
                 "You're using 32-bit Java. [See here for help installing the correct version.](https://github.com/MultiMC/MultiMC5/wiki/Using-the-right-Java)"
+            }
+        ),
+        (
+            "temp-folder",
+            indoc! {"
+                Your MultiMC installation is in a temporary folder. Your operating system will remove it.\n\
+                To prevent data loss, you should move it or extract it somewhere else, like the C: top directory."
+            }
+        ),
+        (
+            "winrar-temp",
+            indoc! {"
+                You did not extract MultiMC to a real folder and are running it from WinRar. Windows will remove it.\n\
+                To prevent data loss, you should extract it somewhere, like the C: top directory."
             }
         ),
         (

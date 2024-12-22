@@ -12,13 +12,13 @@ pub fn common_mistakes(input: &str) -> Vec<(&str, String)> {
 
 pub(crate) type Check = fn(&str) -> Option<(&str, String)>;
 
-pub(crate) const PARSERS: [Check; 16] = [
+pub(crate) const PARSERS: [Check; 18] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
-    //major_java_version,
     forge_too_new_java,
     one_seventeen_plus_java_too_old,
+    two_one_plus_java_too_old,
     m1_failed_to_find_service_port,
     pixel_format_not_accelerated_win10,
     intel_graphics_icd_dll,
@@ -27,9 +27,9 @@ pub(crate) const PARSERS: [Check; 16] = [
     shadermod_optifine_conflict,
     fabric_api_missing,
     java_architecture,
+    detect_temp_directories,
     using_system_glfw,
     using_system_openal,
-    //old_multimc_version,
     reboot_required,
 ];
 
@@ -101,26 +101,6 @@ fn multimc_in_onedrive_managed_folder(log: &str) -> Option<(&str, String)> {
         None
     }
 }
-/*
-fn major_java_version(log: &str) -> Option<(&str, String)> {
-    lazy_static! {
-        static ref RE: Regex =
-            Regex::new(r"Java is version (1.)??(?P<ver>[6-9]|[1-9][0-9])+(\..+)??,").unwrap();
-    }
-    match RE.captures(log) {
-        Some(capture) if capture.name("ver")?.as_str() == "8" => None,
-        Some(capture) => Some((
-            "❗",
-            format!(
-                "You're using Java {}. Versions other than Java 8 are not designed to be used with Minecraft and may cause issues. \
-                [See here for help installing the correct version.](https://github.com/MultiMC/MultiMC5/wiki/Using-the-right-Java)",
-                capture.name("ver")?.as_str()
-            ),
-        )),
-        _ => None,
-    }
-}
-*/
 
 fn forge_too_new_java(log: &str) -> Option<(&str, String)> {
     const URLCLASSLOADER_CAST: &str = "java.lang.ClassCastException: class jdk.internal.loader.ClassLoaders$AppClassLoader cannot be cast to class java.net.URLClassLoader";
@@ -132,17 +112,29 @@ fn forge_too_new_java(log: &str) -> Option<(&str, String)> {
 }
 
 fn one_seventeen_plus_java_too_old(log: &str) -> Option<(&str, String)> {
-    const UNSUPPORTED_CLASS_VERSION_ERROR: &str = "java.lang.UnsupportedClassVersionError: net/minecraft/client/main/Main";
     const FABRIC_JAVA_VERSION_ERROR: &str = "fabric requires {java @ [>=16]}";
     const FABRIC_JAVA_VERSION_ERROR_SEVENTEEN: &str = "fabric requires {java @ [>=17]}";
+    const JAVA_16_WARNING: &str = "Minecraft 21w19a and above require the use of Java 16";
     const JAVA_17_WARNING: &str = "Minecraft 1.18 Pre Release 2 and above require the use of Java 17";
 
-    if log.contains(UNSUPPORTED_CLASS_VERSION_ERROR)
-        || log.contains(FABRIC_JAVA_VERSION_ERROR)
+    if log.contains(FABRIC_JAVA_VERSION_ERROR)
         || log.contains(FABRIC_JAVA_VERSION_ERROR_SEVENTEEN)
+        || log.contains(JAVA_16_WARNING)
         || log.contains(JAVA_17_WARNING)
     {
         Some(("‼", RESPONSES.get("use-java-17")?.to_string()))
+    } else {
+        None
+    }
+}
+
+fn two_one_plus_java_too_old(log: &str) -> Option<(&str, String)> {
+    const JAVA_CHECK_CLASS_FILE_VERSION: &str = "(class file version 65.0)";
+    const JAVA_CHECK_CLASS_FILE_VERSION_MMC: &str = "Minecraft 24w14a and above require the use of Java 21";
+    if log.contains(JAVA_CHECK_CLASS_FILE_VERSION)
+        || log.contains(JAVA_CHECK_CLASS_FILE_VERSION_MMC)
+    {
+        Some(("‼", RESPONSES.get("use-java-21")?.to_string()))
     } else {
         None
     }
@@ -193,6 +185,21 @@ fn java_architecture(log: &str) -> Option<(&str, String)> {
     }
 }
 
+fn detect_temp_directories(log: &str) -> Option<(&str, String)> {
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"Minecraft folder is:\n[A-Z]:/([^/]+/)*Temp").unwrap();
+    }
+    if log.contains("Rar$") {
+        Some(("‼", RESPONSES.get("winrar-temp")?.to_string()))
+    }
+    else if RE.is_match(log) && !log.contains("forge_installer") {
+        Some(("‼", RESPONSES.get("temp-folder")?.to_string()))
+    }
+    else {
+        None
+    }
+}
+
 fn using_system_openal(log: &str) -> Option<(&str, String)> {
     const TRIGGER: &str = "Using system OpenAL.";
     if log.contains(TRIGGER) {
@@ -210,43 +217,6 @@ fn using_system_glfw(log: &str) -> Option<(&str, String)> {
         None
     }
 }
-/* Regex is incorrect/
-fn old_multimc_version(log: &str) -> Option<(&str, String)> {
-    lazy_static! {
-        static ref RE: Regex =
-            Regex::new(r"MultiMC version: (?P<major_ver>0\.[0-9]+\.[0-9]+-(?P<build>[0-9]+))\n")
-                .unwrap();
-    }
-    if let Some(capture) = RE.captures(log) {
-        match capture.name("build")?.as_str().parse::<u32>() {
-            Ok(o) => {
-                if o < 900 {
-                    Some((
-                        "❗",
-                        format!(
-                            "You seem to be using an old build of MultiMC ({}). \
-                            Please update to a more recent version.",
-                            capture.name("major_ver")?.as_str()
-                        ),
-                    ))
-                } else {
-                    None
-                }
-            }
-            Err(_) => Some((
-                "❗",
-                format!(
-                    "You seem to be using an unofficial version of MultiMC ({}). \
-                    Please only use MultiMC downloaded from [multimc.org](https://multimc.org/#Download).",
-                    capture.name("major_ver")?.as_str()
-                ),
-            )),
-        }
-    } else {
-        None
-    }
-}
-*/
 
 fn reboot_required(log: &str) -> Option<(&str, String)> {
     const TRIGGER: &str = "Couldn't extract native jar";
