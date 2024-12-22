@@ -12,7 +12,7 @@ pub fn common_mistakes(input: &str) -> Vec<(&str, String)> {
 
 pub(crate) type Check = fn(&str) -> Option<(&str, String)>;
 
-pub(crate) const PARSERS: [Check; 17] = [
+pub(crate) const PARSERS: [Check; 18] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
@@ -30,6 +30,7 @@ pub(crate) const PARSERS: [Check; 17] = [
     detect_temp_directories,
     using_system_glfw,
     using_system_openal,
+    reboot_required,
 ];
 
 fn multimc_in_program_files(log: &str) -> Option<(&str, String)> {
@@ -113,10 +114,12 @@ fn forge_too_new_java(log: &str) -> Option<(&str, String)> {
 fn one_seventeen_plus_java_too_old(log: &str) -> Option<(&str, String)> {
     const FABRIC_JAVA_VERSION_ERROR: &str = "fabric requires {java @ [>=16]}";
     const FABRIC_JAVA_VERSION_ERROR_SEVENTEEN: &str = "fabric requires {java @ [>=17]}";
+    const JAVA_16_WARNING: &str = "Minecraft 21w19a and above require the use of Java 16";
     const JAVA_17_WARNING: &str = "Minecraft 1.18 Pre Release 2 and above require the use of Java 17";
 
     if log.contains(FABRIC_JAVA_VERSION_ERROR)
         || log.contains(FABRIC_JAVA_VERSION_ERROR_SEVENTEEN)
+        || log.contains(JAVA_16_WARNING)
         || log.contains(JAVA_17_WARNING)
     {
         Some(("‼", RESPONSES.get("use-java-17")?.to_string()))
@@ -215,6 +218,15 @@ fn using_system_glfw(log: &str) -> Option<(&str, String)> {
     }
 }
 
+fn reboot_required(log: &str) -> Option<(&str, String)> {
+    const TRIGGER: &str = "Couldn't extract native jar";
+    if log.contains(TRIGGER) {
+        Some(("‼", RESPONSES.get("reboot-required")?.to_string()))
+    } else {
+        None
+    }
+}
+
 pub fn common_origins(input: &str) -> Vec<(&str, String)> {
     ORIGINS.iter().flat_map(|m| m(input)).collect()
 }
@@ -256,8 +268,9 @@ fn pirated_build(log: &str) -> Option<(&str, String)> {
 fn forked_build(log: &str) -> Option<(&str, String)> {
     const POLYMC_BUILD: &str = "PolyMC version: ";
     const MANYMC_BUILD: &str = "ManyMC version: ";
+    const PRISM_BUILD: &str = "Prism Launcher version: ";
 
-    if log.contains(POLYMC_BUILD) || log.contains(MANYMC_BUILD) {
+    if log.contains(POLYMC_BUILD) || log.contains(MANYMC_BUILD) || log.contains(PRISM_BUILD) {
         Some(("‼", RESPONSES.get("forked-build")?.to_string()))
     } else {
         None
