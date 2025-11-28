@@ -122,6 +122,10 @@ static_image_command! {
         "Please set your instance memory allocation:";
     install_forge "iforge", "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/install_forge.gif",
         "How to install Forge:";
+    install_neoforge "ineoforge", "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/install_neoforge.gif",
+        "How to install NeoForge:";
+    install_fabric "ifabric", "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/install_fabric.gif",
+        "How to install Fabric:";        
     javaarg "javaargs" "jarg" "jargs",
         "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/jvm_args.png";
     select_java_instance "instjava",
