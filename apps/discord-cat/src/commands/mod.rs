@@ -86,7 +86,7 @@ static_text_command! {
         "Please make sure you only download mods from reputable sources.",
         "For more info, please read https://vazkii.net/repost/";
     mcsr,
-        "MCSR requires Java 17 and should installed following the instructions on this page for the respective OS:<https://github.com/MultiMC/Launcher/wiki/Using-the-right-Java>",
+        "MCSR requires Java 17 and should beinstalled following the instructions on this page for the respective OS:<https://github.com/MultiMC/Launcher/wiki/Using-the-right-Java>",
         "Any issues once inside the game needs to be handled on their server:<https://mcsrranked.com/discord>";
     ipv4,
         "Add this to your Java arguments to make Minecraft prefer IPv4 over IPv6:",
